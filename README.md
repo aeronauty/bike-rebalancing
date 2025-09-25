@@ -1,36 +1,130 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bike Rebalancing Dashboard
+
+A production-ready Next.js application for real-time bike sharing system rebalancing using live GBFS (General Bikeshare Feed Specification) data.
+
+## Features
+
+- **Real-time Data**: Live integration with GBFS feeds
+- **Interactive Map**: Built with deck.gl and react-map-gl using MapLibre tiles
+- **Modern UI**: Clean interface with shadcn/ui components
+- **Responsive Design**: Optimized for desktop and mobile
+- **TypeScript**: Full type safety throughout the application
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: TailwindCSS
+- **UI Components**: shadcn/ui (Button, Slider, Switch, Select, Card)
+- **Mapping**: deck.gl + react-map-gl + MapLibre GL
+- **Data Source**: GBFS (General Bikeshare Feed Specification)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd bike-rebalancing
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.local.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file with the following variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_GBFS_ROOT=https://gbfs.divvybikes.com/gbfs
+```
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── layout.tsx      # Root layout
+│   ├── page.tsx        # Main dashboard page
+│   └── globals.css     # Global styles
+├── components/         # React components
+│   ├── ui/            # shadcn/ui components
+│   └── MapComponent.tsx # Main map component
+├── types/             # TypeScript type definitions
+└── lib/               # Utility functions
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Features Overview
+
+### Dashboard Layout
+- **Top Bar**: Application title and branding
+- **Left Panel**: Control panel with system configuration, controls, and status
+- **Right Panel**: Interactive map with real-time bike station data
+
+### Map Features
+- **Real-time Updates**: Live bike availability data
+- **Color-coded Stations**: Visual indicators for bike availability levels
+- **Interactive Elements**: Hover and click interactions
+- **Legend**: Clear visual guide for station status
+
+### Controls
+- **System Selection**: Choose between different bike share systems
+- **Live Mode Toggle**: Enable/disable real-time updates
+- **Refresh Interval**: Configurable update frequency
+- **Manual Controls**: Refresh data, export reports, settings
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Adding New Features
+
+1. Create components in `src/components/`
+2. Add types in `src/types/`
+3. Update the main page in `src/app/page.tsx`
+4. Test thoroughly before deployment
+
+## Deployment
+
+The application is ready for deployment on platforms like:
+- Vercel (recommended for Next.js)
+- Netlify
+- AWS Amplify
+- Any Node.js hosting platform
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
