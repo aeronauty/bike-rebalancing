@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -12,6 +12,39 @@ export default function Home() {
   const [isLiveMode, setIsLiveMode] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState([30]);
   const [selectedSystem, setSelectedSystem] = useState('divvy');
+  const [systemStats, setSystemStats] = useState({
+    stations: 0,
+    bikes: 0,
+    lastUpdate: 'Never',
+    connection: 'Disconnected'
+  });
+
+  // Fetch system statistics
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/gbfs');
+      if (response.ok) {
+        const data = await response.json();
+        setSystemStats({
+          stations: data.stations.length,
+          bikes: data.stations.reduce((sum: number, station: any) => sum + (station.num_bikes_available || 0), 0),
+          lastUpdate: new Date(data.fetchedAt).toLocaleTimeString(),
+          connection: 'Connected'
+        });
+      }
+    } catch (error) {
+      setSystemStats(prev => ({ ...prev, connection: 'Error' }));
+    }
+  };
+
+  // Auto-refresh stats when live mode is enabled
+  useEffect(() => {
+    if (isLiveMode) {
+      fetchStats();
+      const interval = setInterval(fetchStats, refreshInterval[0] * 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isLiveMode, refreshInterval]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -86,7 +119,11 @@ export default function Home() {
                 <CardTitle className="text-lg">Controls</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full" variant="default">
+                <Button 
+                  className="w-full" 
+                  variant="default"
+                  onClick={fetchStats}
+                >
                   Refresh Data
                 </Button>
                 <Button className="w-full" variant="outline">
@@ -106,19 +143,24 @@ export default function Home() {
               <CardContent className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Connection:</span>
-                  <span className="text-green-600 font-medium">Connected</span>
+                  <span className={`font-medium ${
+                    systemStats.connection === 'Connected' ? 'text-green-600' : 
+                    systemStats.connection === 'Error' ? 'text-red-600' : 'text-gray-600'
+                  }`}>
+                    {systemStats.connection}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Last Update:</span>
-                  <span className="text-gray-900">2 seconds ago</span>
+                  <span className="text-gray-900">{systemStats.lastUpdate}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Stations:</span>
-                  <span className="text-gray-900">587</span>
+                  <span className="text-gray-900">{systemStats.stations.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Bikes:</span>
-                  <span className="text-gray-900">4,231</span>
+                  <span className="text-gray-900">{systemStats.bikes.toLocaleString()}</span>
                 </div>
               </CardContent>
             </Card>

@@ -22,3 +22,4 @@ export interface ViewState {
   pitch: number;
   bearing: number;
 }
+
