@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Map, { Marker } from 'react-map-gl/maplibre';
+import DeckGL from '@deck.gl/react';
+import { ScatterplotLayer } from '@deck.gl/layers';
+import { COORDINATE_SYSTEM } from '@deck.gl/core';
 
 // Use a simple dark map style
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
@@ -102,10 +105,10 @@ export default function MapComponent() {
     return () => clearInterval(interval);
   }, []);
 
-  // Create 3D column layer for bike stations - much more reliable than ScatterplotLayer
+  // Create 3D scatterplot layer for bike stations - more reliable than ColumnLayer
   const layers = [
-    new ColumnLayer({
-      id: 'bike-stations-columns',
+    new ScatterplotLayer({
+      id: 'bike-stations-scatter',
       data: stations,
       pickable: true,
       extruded: true,
@@ -113,6 +116,7 @@ export default function MapComponent() {
       filled: true,
       radiusMinPixels: 8,
       radiusMaxPixels: 60,
+      coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
       getPosition: (d: any) => {
         const lng = d.lon || d.longitude || 0;
         const lat = d.lat || d.latitude || 0;
@@ -194,7 +198,7 @@ export default function MapComponent() {
                     <div>📊 Availability: ${availability}%</div>
                     ${pain > 0 ? `<div>⚡ Pain Score: ${pain.toFixed(2)}</div>` : ''}
                     <div style="margin-top: 8px; font-size: 11px; color: #999;">
-                      Column Height = Pain Score × 100m
+                      Sphere Height = Pain Score × 100m
                     </div>
                   </div>
                 </div>
@@ -292,9 +296,9 @@ export default function MapComponent() {
         </div>
       </div>
 
-      {/* 3D Column Legend */}
+      {/* 3D Scatterplot Legend */}
       <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-lg z-20">
-        <h3 className="text-sm font-semibold mb-2">🏗️ 3D Column Visualization</h3>
+        <h3 className="text-sm font-semibold mb-2">🔵 3D Scatterplot Visualization</h3>
         <div className="space-y-1 text-xs">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500"></div>
@@ -319,7 +323,7 @@ export default function MapComponent() {
         </div>
         <div className="mt-2 pt-2 border-t text-xs text-gray-500 space-y-1">
           <div>🏢 Height = Pain Score × 100m</div>
-          <div>⭕ Width = Pain Score × 12</div>
+          <div>⭕ Size = Pain Score × 12</div>
           <div>🎯 Stations: {stations.length}</div>
         </div>
         <div className="mt-2 pt-2 border-t text-xs text-blue-600">
