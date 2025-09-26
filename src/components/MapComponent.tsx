@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Map, { Source, Layer } from 'react-map-gl/maplibre';
+import Map, { Marker } from 'react-map-gl/maplibre';
 
-// Use a simple dark map style that works well with deck.gl
+// Use a simple dark map style
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
 // Initial view state with 3D perspective
